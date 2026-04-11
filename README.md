@@ -12,7 +12,9 @@
 
 </div>
 
-> 🚧 **This repository is under construction. Code and data will be released soon. Please star ⭐ to stay updated.**
+This is the official repository for the paper: **"Bridging 'What It Thinks' and 'How It Speaks': Self-Aware Speech Language Models for Expressive Speech Generation"**
+
+> 🚧 **This repository is under construction. Code and data will be released soon.**
 
 ---
 
