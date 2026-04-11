@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SA-SLM: Self-Aware Speech Language Model</title>
+    <meta name="description" content="Demo page for SA-SLM.">
+    <style>
+        /* ============================================================
+           RESET & BASE
+        ============================================================ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --color-primary:   #667eea;
+            --color-secondary: #764ba2;
+            --color-accent1:   #63b3ed;
+            --color-accent2:   #9f7aea;
+            --color-accent3:   #f687b3;
+            --color-accent4:   #68d391;
+            --color-bg:        #f5f7fa;
+            --color-surface:   #ffffff;
+            --color-text:      #2c3e50;
+            --color-muted:     #718096;
+            --color-border:    #e2e8f0;
+            --radius-sm:  8px;
+            --radius-md:  12px;
+            --radius-lg:  16px;
+            --shadow-sm:  0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md:  0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg:  0 12px 30px rgba(0,0,0,0.12);
+            --transition: 0.25s ease;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        /* ============================================================
+           LAYOUT
+        ============================================================ */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .section    { padding: 52px 0; }
+
+        /* ============================================================
+           HEADER
+        ============================================================ */
+        .site-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            padding: 64px 24px 44px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .site-header::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(99,179,237,.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .header-paper-title {
+            font-size: clamp(1.6rem, 4vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .header-paper-title .grad {
+            background: linear-gradient(90deg, #63b3ed, #9f7aea, #f687b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-venue {
+            display: inline-block;
+            padding: 3px 14px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.1);
+            border: 1px solid rgba(255,255,255,.2);
+            font-size: .82rem;
+            color: #a0aec0;
+            margin-bottom: 10px;
+            letter-spacing: .5px;
+        }
+        .header-authors {
+            font-size: .95rem;
+            color: #cbd5e0;
+            margin-bottom: 6px;
+        }
+        .header-affiliation {
+            font-size: .85rem;
+            color: #718096;
+            margin-bottom: 28px;
+        }
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: relative;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 18px;
+            border-radius: 24px;
+            font-size: .83rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,.15);
+            backdrop-filter: blur(8px);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .badge:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+        .badge-paper  { background: rgba(99,179,237,.2);  color: #63b3ed; }
+        .badge-code   { background: rgba(72,187,120,.2);  color: #68d391; }
+        .badge-demo   { background: rgba(159,122,234,.2); color: #b794f4; }
+        .badge-hf     { background: rgba(246,135,179,.2); color: #f687b3; }
+        .badge-ms     { background: rgba(251,191,36,.2);  color: #fbbf24; }
+
+        /* ============================================================
+           SECTION TITLE
+        ============================================================ */
+        .section-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #1a202c;
+            padding-bottom: 10px;
+            margin-bottom: 6px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, var(--color-primary), var(--color-secondary)) 1;
+            display: inline-block;
+        }
+        .section-desc {
+            color: var(--color-muted);
+            font-size: .92rem;
+            margin-bottom: 28px;
+        }
+        /* ── Emotion column ── */
+        .col-emotion {
+            width: 90px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* ── Question column ── */
+        .col-question {
+            width: 200px;
+            vertical-align: top;
+        }
+
+        /* ── Sample columns (baselines) ── */
+        .col-sample {
+            vertical-align: top;
+            min-width: 180px;
+        }
+
+        
+        /* ── fix: define --accent (used by .col-ours border) ── */
+        :root {
+            /* …existing vars… */
+            --accent: #667eea;   /* same as --color-primary */
+        }
+
+        /* ── Ours column: header cell ── */
+        .col-ours-header {
+            background: linear-gradient(135deg,
+                rgba(102,126,234,0.25) 0%,
+                rgba(118,75,162,0.25) 100%) !important;
+            border-top: 3px solid #667eea;
+            position: relative;
+        }
+
+        /* ── Ours badge shown inside the header <th> ── */
+        .ours-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #9f7aea);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.45);
+        }
+
+        /* ── Ours data cell: override base .col-ours ── */
+        td.col-ours {
+            background: rgba(102, 126, 234, 0.07);
+            border-left:  2px solid #667eea;
+            border-right: 2px solid #667eea;
+        }
+
+        /* ── Inner flex wrapper inside ours cell ── */
+        .ours-cell-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* ── Reply text variant inside ours cell ── */
+        td.col-ours .reply-text {
+            border-left-color: #667eea;
+            background: rgba(102, 126, 234, 0.06);
+            color: #4a5568;
+        }
+
+        /* ── Question text (italic, muted) ── */
+        .question-text {
+            font-style: italic;
+            color: #718096;
+            font-size: 0.82rem;
+            margin-top: 6px;
+        }
+        /* ── Highlight "ours" column ── */
+        .col-ours {
+            background: rgba(99, 102, 241, 0.06);
+            border-left: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
+        }
+
+        /* ── Reply text below audio ── */
+        .reply-text {
+            margin-top: 6px;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            padding: 4px 6px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+            border-left: 2px solid rgba(99,102,241,0.3);
+        }
+
+        /* ============================================================
+           ABSTRACT
+        ============================================================ */
+        .abstract-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 34px 38px;
+            box-shadow: var(--shadow-md);
+            border-left: 5px solid;
+            border-image: linear-gradient(180deg, var(--color-accent1), var(--color-accent2)) 1;
+            font-size: .97rem;
+            color: #4a5568;
+            line-height: 1.85;
+        }
+        .abstract-card strong { color: #2d3748; }
+
+        /* ============================================================
+        FRAMEWORK FIGURE
+        ============================================================ */
+        .framework-figure {
+            margin: 2rem auto 0;
+            text-align: center;
+        }
+        .framework-figure img {
+            max-width: 100%;
+            width: 860px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: block;
+            margin: 0 auto;
+        }
+        .framework-figure figcaption {
+            margin-top: .6rem;
+            font-size: .82rem;
+            color: var(--color-muted);
+            font-style: italic;
+        }
+
+        /* ============================================================
+        FEATURE LIST  (replaces highlight cards)
+        ============================================================ */
+        .feature-list {
+            list-style: none;
+            margin-top: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid transparent;
+            border-image: linear-gradient(180deg, var(--color-primary), var(--color-secondary)) 1;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .feature-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+        .feature-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            line-height: 1;
+            margin-top: 2px;
+        }
+        .feature-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .feature-body strong {
+            font-size: .95rem;
+            color: #2d3748;
+        }
+        .feature-desc {
+            font-size: .85rem;
+            color: var(--color-muted);
+            line-height: 1.55;
+        }
+
+        /* ============================================================
+           TABLE OF CONTENTS
+        ============================================================ */
+        .toc-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-sm);
+        }
+        .toc-card h3 { font-size: .97rem; font-weight: 700; color: #2d3748; margin-bottom: 14px; }
+       
+        .toc-list {
+            list-style: none;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;  /* 改为纵向排列 */
+            gap: 8px;
+        }
+         .toc-list li {
+            flex: 0 0 auto;  /* 不拉伸，按内容宽度 */
+        }
+        .toc-list li a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            color: #4a5568;
+            font-size: .86rem;
+            font-weight: 500;
+            background: #f7fafc;
+            transition: background var(--transition), color var(--transition);
+            white-space: nowrap;      /* 强制单行 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .toc-list li a:hover {
+            background: linear-gradient(135deg,rgba(102,126,234,.1),rgba(118,75,162,.1));
+            color: #553c9a;
+        }
+        .toc-num {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: #fff;
+            font-size: .72rem;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* ============================================================
+           AUDIO COMPARISON SECTION  (shared styles)
+        ============================================================ */
+        .demo-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 34px 38px;
+            box-shadow: var(--shadow-md);
+            margin-top: 28px;
+        }
+
+        /* info box above table */
+        .demo-info {
+            background: #f7fafc;
+            border-left: 4px solid var(--color-primary);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 13px 18px;
+            font-size: .88rem;
+            color: #4a5568;
+            margin-bottom: 22px;
+        }
+
+        /* ---- comparison table ---- */
+        .cmp-table-wrap { overflow-x: auto; }
+        .cmp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .85rem;
+            min-width: 560px;
+        }
+        .cmp-table thead tr {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: #fff;
+        }
+        .cmp-table th {
+            padding: 11px 14px;
+            font-weight: 600;
+            font-size: .82rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .cmp-table th.col-context { text-align: left; }
+        .cmp-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: middle;
+            text-align: center;
+        }
+        .cmp-table tr:last-child td { border-bottom: none; }
+        .cmp-table tr:hover td { background: #f7fafc; }
+        .cmp-table td.col-context { text-align: left; }
+
+        /* context cell */
+        .ctx-block { display: flex; flex-direction: column; gap: 6px; }
+        .ctx-emotion { /* badge */ }
+        .ctx-text {
+            font-size: .83rem;
+            color: #4a5568;
+            line-height: 1.5;
+            max-width: 260px;
+        }
+
+        /* audio player */
+        .audio-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .audio-wrap audio {
+            width: 150px;
+            height: 30px;
+            border-radius: 20px;
+            outline: none;
+        }
+        .audio-label {
+            font-size: .72rem;
+            color: var(--color-muted);
+            font-weight: 600;
+            text-align: center;
+        }
+        .audio-placeholder {
+            width: 150px; height: 30px;
+            background: #edf2f7;
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .72rem;
+            color: #a0aec0;
+        }
+
+        /* ---- emotion badges ---- */
+        .emo { display:inline-block; padding:2px 10px; border-radius:12px; font-size:.76rem; font-weight:600; }
+        .emo-happy    { background:#fefcbf; color:#744210; }
+        .emo-sad      { background:#ebf8ff; color:#2c5282; }
+        .emo-angry    { background:#fff5f5; color:#742a2a; }
+        .emo-fear     { background:#faf5ff; color:#44337a; }
+        .emo-surprise { background:#f0fff4; color:#1c4532; }
+        .emo-disgust  { background:#fffaf0; color:#7b341e; }
+        .emo-neutral  { background:#f7fafc; color:#4a5568; }
+        .emo-empathy  { background:#fff0f6; color:#702459; }
+
+        /* ============================================================
+           RESULTS TABLE
+        ============================================================ */
+        .results-wrap { overflow-x: auto; }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .84rem;
+            min-width: 680px;
+        }
+        .results-table thead tr:first-child th {
+            background: #2d3748;
+            color: #fff;
+            padding: 10px 13px;
+            font-size: .8rem;
+        }
+        .results-table thead tr:last-child th {
+            background: #3d4f63;
+            color: #e2e8f0;
+            padding: 8px 13px;
+            font-size: .78rem;
+        }
+        .results-table th { text-align: center; }
+        .results-table th.left { text-align: left; }
+        .results-table td {
+            padding: 9px 13px;
+            border-bottom: 1px solid var(--color-border);
+            text-align: center;
+            color: #4a5568;
+        }
+        .results-table td.left { text-align: left; font-weight: 600; color: #2d3748; }
+        .results-table tr:hover td { background: #f7fafc; }
+        .results-table .row-ours td {
+            background: linear-gradient(90deg,rgba(102,126,234,.06),rgba(118,75,162,.06));
+            font-weight: 600;
+        }
+        .results-table .row-ours td.left { color: #553c9a; }
+        .results-table .row-group td {
+            background: #f7fafc;
+            font-style: italic;
+            color: var(--color-muted);
+            font-size: .8rem;
+            padding: 5px 13px;
+        }
+        .best { font-weight: 700; color: #2b6cb0; }
+
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+        .site-footer {
+            background: #1a202c;
+            color: #718096;
+            text-align: center;
+            padding: 28px 20px;
+            font-size: .86rem;
+            margin-top: 60px;
+        }
+        .site-footer a { color: #63b3ed; text-decoration: none; }
+
+        /* ============================================================
+           UTILITIES
+        ============================================================ */
+        .fade-in { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+        .fade-in.visible { opacity: 1; transform: none; }
+        .mt-4 { margin-top: 16px; }
+        .note-box {
+            margin-top: 14px;
+            padding: 12px 16px;
+            background: #f7fafc;
+            border-radius: var(--radius-sm);
+            font-size: .82rem;
+            color: #4a5568;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media (max-width: 640px) {
+            .demo-card, .abstract-card { padding: 22px 18px; }
+            .cmp-table th, .cmp-table td { padding: 9px 8px; }
+            .audio-wrap audio, .audio-placeholder { width: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================================================================
+     HEADER
+================================================================ -->
+<header class="site-header">
+    <div class="container">
+        <div class="header-venue">SA-SLM Demo</div>
+        <h1 class="header-paper-title"><span class='grad'>SA-SLM</span>: Self-Aware Speech Language Model<br><small style='font-size:.55em;font-weight:400;color:#a0aec0;'>Bridging the Semantic Understanding–Acoustic Realization Gap</small></h1>
+        <p class="header-authors">Anonymous Authors</p>
+        <p class="header-affiliation">Anonymous Institution</p>
+        <div class="badge-row">
+            <a href="#" class="badge badge-paper" target="_blank" rel="noopener">📄 Paper</a>
+<a href="#" class="badge badge-code" target="_blank" rel="noopener">💻 Code</a>
+<a href="#" class="badge badge-demo" target="_blank" rel="noopener">🎙️ Demo</a>
+        </div>
+    </div>
+</header>
+
+<!-- ================================================================
+     MAIN
+================================================================ -->
+<main>
+<div class="container">
+
+   <!-- Abstract -->
+    <section class="section fade-in" id="abstract">
+        <span class="section-title">Abstract</span>
+        <div class="abstract-card mt-4">
+            While current Speech Language Models (SLMs) are smart enough to understand context, they often sound flat and robotic, failing to convey the underlying communicative intent. We call this the <strong>semantic understanding–acoustic realization gap</strong>. To fix this, we introduce <strong>SA-SLM (Self-Aware Speech Language Model)</strong>. By extracting stable expressive intents and acting as its own critic during training, SA-SLM naturally aligns <em>what it thinks</em> with <em>how it speaks</em>, generating highly expressive and context-aware speech.<br><br><div style='text-align: center; margin-top: 1.5rem;'>  <img src='./framework.jpg' alt='SA-SLM Framework' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);' /></div>
+        </div>
+        
+    </section>
+
+    
+    <section class="section fade-in" id="highlights">
+        <span class="section-title">Key Features</span>
+        <ul class="feature-list">
+            <li class="feature-item"><span class="feature-icon">🧠</span><div class="feature-body"><strong>Intent-Aware Bridging — Architectural Innovation</strong><span class="feature-desc">Introduces a Variational Information Bottleneck (VIB) to distill stable, utterance-level expressive intent, seamlessly bridging the semantic-acoustic gap.</span></div></li>
+<li class="feature-item"><span class="feature-icon">🔄</span><div class="feature-body"><strong>Self-Reflective Training — Label-Free Alignment</strong><span class="feature-desc">Repurposes the SLM as its own critic to provide rubric-based feedback on emotion and prosody, enabling closed-loop alignment without expensive external labels.</span></div></li>
+<li class="feature-item"><span class="feature-icon">⚡</span><div class="feature-body"><strong>3B Params &amp; 800h Data — Resource-Efficient &amp; Accessible</strong><span class="feature-desc">Achieves rich, natural expressiveness with only 3B parameters and 800 hours of speech data, making it highly training-friendly and easy to reproduce.</span></div></li>
+<li class="feature-item"><span class="feature-icon">🏆</span><div class="feature-body"><strong>Rivals GPT-4o-Audio — Stronger Expressiveness</strong><span class="feature-desc">Surpasses all open-source baselines including 10× larger open-source models (e.g., 30B), with +10.58pt emotion alignment and richer pitch variation (F0-Var: 63.44 vs. 49.76), leaving only a 0.08-point gap to GPT-4o-Audio in Overall Performance (4.33 vs. 4.41).</span></div></li>
+        </ul>
+    </section>
+
+
+    <!-- Table of Contents -->
+    <section class="section fade-in" id="toc">
+        <span class="section-title">Demo Contents</span>
+        <div class="toc-card mt-4">
+            <h3>Navigate to Demo Sections</h3>
+            <ul class="toc-list">
+                <li><a href="#sec-emotion"><span class="toc-num">1</span>Emotional Generation Ability</a></li>
+<li><a href="#sec-open-domain"><span class="toc-num">2</span>Open-Domain Conversational Samples</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         DYNAMIC DEMO SECTIONS  (injected by Python)
+    ============================================================ -->
+    
+<section class="section fade-in" id="sec-emotion">
+    <span class="section-title">Emotional Generation Ability</span>
+    <div class="demo-card">
+        <div class="demo-info"><strong>Evaluation on EchoMind Benchmark:</strong> This section presents the experimental results from our paper evaluated on the EchoMind benchmark. To illustrate the model's expressive performance, we sampled one representative data point for each emotion dimension as a demonstration.<br><span class='section-footnote'>Note: <strong>CosyVoice</strong> serves as a TTS baseline, which generates audio using the reference text conditioned on the golden emotion labels.</span> <span class='ours-badge'>SA-SLM (Ours)</span> is highlighted.</div>
+        <div class="cmp-table-wrap">
+            <table class="cmp-table">
+                <thead>
+                    <tr><th class="col-emotion">Emotion</th><th class="col-question">Question Speech / Text</th><th class="col-sample">SA-SLM (Ours)</th><th class="col-sample">GPT-4o-Audio</th><th class="col-sample">Qwen3-Omni-30B</th><th class="col-sample">CosyVoice(TTS)</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="col-emotion"><span class="emo emo-angry">Angry</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/angry.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Did you see how the referee handled that match?</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/angry.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Well, I kind of mumbled while watching it. But you know, the way the referee was making decisions, it seemed a bit inconsistent to me. Sometimes he thought a goal was scored when it wasn&#x27;t, and other times he let a foul pass. It really threw things off the balance for both teams. What do you think about how the referee&#x27;s officiating affects the game?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/angry.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, absolutely—I can&#x27;t believe it either! Those decisions were outrageous; the referee really ruined the flow of the game! I&#x27;d be furious, too—how did you feel watching that unfold?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/angry.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Yeah, I saw it! The calls were all over the place. Felt like the ref was making it up as he went along. What a mess, right?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/angry.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, absolutely—I can&#x27;t believe it either! Those decisions were outrageous; the referee really ruined the flow of the game! I&#x27;d be furious, too—how did you feel watching that unfold?</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-neutral">Fearful</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/fearful.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/fearful.wav" type="audio/mpeg"></audio></div><div class="reply-text">Do we really need everyone to participate in the scary storytelling game?</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/fearful.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/fearful.wav" type="audio/mpeg"></audio></div><div class="reply-text">Eh, not really. I&#x27;m kinda creeped out to be honest. You know, I don&#x27;t really want to get involved in that whole creepy story thing. But, if you guys need me, I&#x27;ll stay on the sidelines. What do you all think about it?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/fearful.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/fearful.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, I completely understand if someone feels a bit scared—I mean, those stories can get really creepy! Maybe we could offer the option to observe instead, so everyone feels safe and comfortable? Would that help ease your worry a bit?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/fearful.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/fearful.wav" type="audio/mpeg"></audio></div><div class="reply-text">Not everyone has to join in. Some people might feel uncomfortable with scary stories. You can still enjoy the game with just a few participants.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/fearful.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/fearful.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, I completely understand if someone feels a bit scared—I mean, those stories can get really creepy! Maybe we could offer the option to observe instead, so everyone feels safe and comfortable? Would that help ease your worry a bit?</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-sad">Sad</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/sad.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/sad.wav" type="audio/mpeg"></audio></div><div class="reply-text">This was my partner&#x27;s favorite album, it brings back so many memories.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/sad.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/sad.wav" type="audio/mpeg"></audio></div><div class="reply-text">I&#x27;m so sorry to hear that. It sounds like this album means a lot to you and holds so many special memories of your partner. You can tell me more if you&#x27;d like. I&#x27;m here for you.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/sad.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/sad.wav" type="audio/mpeg"></audio></div><div class="reply-text">I&#x27;m so sorry for your loss; it&#x27;s understandable why this album might stir up deep memories and feelings. Music can hold powerful connections to loved ones. Would you feel comfortable sharing some of your favorite moments together? I&#x27;m here for you.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/sad.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/sad.wav" type="audio/mpeg"></audio></div><div class="reply-text">I&#x27;m so sorry for your loss. It sounds like this album held a special place in your partner&#x27;s heart. What kind of memories does it bring up for you?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/sad.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/sad.wav" type="audio/mpeg"></audio></div><div class="reply-text">I&#x27;m so sorry for your loss; it&#x27;s understandable why this album might stir up deep memories and feelings. Music can hold powerful connections to loved ones. Would you feel comfortable sharing some of your favorite moments together? I&#x27;m here for you.</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-disgust">Disgusted</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/disgusted.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/disgusted.wav" type="audio/mpeg"></audio></div><div class="reply-text">So this is the new software update everyone has been raving about?</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/disgusted.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/disgusted.wav" type="audio/mpeg"></audio></div><div class="reply-text">Yeah, honestly, it&#x27;s pretty disappointing. People talked it up so much, but it really doesn&#x27;t seem that good.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/disgusted.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/disgusted.wav" type="audio/mpeg"></audio></div><div class="reply-text">Ugh, I know, right? All that hype and this is what they deliver—I expected better. Feels like a downgrade rather than an upgrade!</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/disgusted.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/disgusted.wav" type="audio/mpeg"></audio></div><div class="reply-text">Yeah, I hear you — that update’s been a mess for a lot of people. What’s not working for you?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/disgusted.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/disgusted.wav" type="audio/mpeg"></audio></div><div class="reply-text">Ugh, I know, right? All that hype and this is what they deliver—I expected better. Feels like a downgrade rather than an upgrade!</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-surprise">Surprised</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/surprised.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/surprised.wav" type="audio/mpeg"></audio></div><div class="reply-text">Can you believe they chose him for the main character?</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/surprised.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/surprised.wav" type="audio/mpeg"></audio></div><div class="reply-text">Yeah, it&#x27;s kind of amazing. He wasn&#x27;t the first person I expected for the main character.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/surprised.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/surprised.wav" type="audio/mpeg"></audio></div><div class="reply-text">I know—Seems like an unexpected choice, doesn&#x27;t it? Curious to find out how he handles the role.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/surprised.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/surprised.wav" type="audio/mpeg"></audio></div><div class="reply-text">Yeah, it&#x27;s surprising. What do you think about his performance so far?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/surprised.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/surprised.wav" type="audio/mpeg"></audio></div><div class="reply-text">I know—Seems like an unexpected choice, doesn&#x27;t it? Curious to find out how he handles the role.</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-neutral">Neutral</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/neutral.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/neutral.wav" type="audio/mpeg"></audio></div><div class="reply-text">I&#x27;d like some information about your evening classes please.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/neutral.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/neutral.wav" type="audio/mpeg"></audio></div><div class="reply-text">Well, I&#x27;m not sure if I have any evening classes. Hmm. I&#x27;m not sure if I&#x27;m even in charge of them. But you could check the school&#x27;s website, usually they have all the details there. Or you could ask the teacher in charge of the classes. Why are you interested in my evening classes?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/neutral.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/neutral.wav" type="audio/mpeg"></audio></div><div class="reply-text">Certainly! I&#x27;d be happy to help you, honored senior. We offer a variety of evening classes suitable for different interests, including art, languages, computer basics, gentle fitness, and more. Could you please tell me if there&#x27;s a particular subject you&#x27;re interested in or if you&#x27;d like information about schedules and enrollment options?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/neutral.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/neutral.wav" type="audio/mpeg"></audio></div><div class="reply-text">Sure! We have art, languages, computer basics, and gentle fitness classes. Do you have a specific interest? I can share schedules and enrollment details.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/neutral.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/neutral.wav" type="audio/mpeg"></audio></div><div class="reply-text">Certainly! I&#x27;d be happy to help you, honored senior. We offer a variety of evening classes suitable for different interests, including art, languages, computer basics, gentle fitness, and more. Could you please tell me if there&#x27;s a particular subject you&#x27;re interested in or if you&#x27;d like information about schedules and enrollment options?</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-happy">Happy</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/happy.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/question/happy.wav" type="audio/mpeg"></audio></div><div class="reply-text">Guess what, the coach told me I&#x27;m starting in the soccer match this afternoon!</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/happy.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/ours/happy.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, that&#x27;s great news! You must be really excited. Are you the only one starting? Or are there others too?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/happy.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/gpt4o/happy.wav" type="audio/mpeg"></audio></div><div class="reply-text">That&#x27;s awesome! You must&#x27;ve been practicing really hard—I&#x27;m sure you&#x27;ll do great in the game. Good luck, and enjoy every minute out there!</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/happy.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/qwen3_30b_omni/happy.wav" type="audio/mpeg"></audio></div><div class="reply-text">That&#x27;s amazing! You must be so excited. I&#x27;m sure you&#x27;ll do great out there. Enjoy every minute of it!</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/happy.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/emotion/cosyvoice/happy.wav" type="audio/mpeg"></audio></div><div class="reply-text">That&#x27;s awesome! You must&#x27;ve been practicing really hard—I&#x27;m sure you&#x27;ll do great in the game. Good luck, and enjoy every minute out there!</div></td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</section>
+
+<section class="section fade-in" id="sec-open-domain">
+    <span class="section-title">Open-Domain Conversational Samples</span>
+    <div class="demo-card">
+        <div class="demo-info"><strong>Open-Domain Generalization & Practicality:</strong> This section showcases SA-SLM's practical utility across diverse daily topics, including samples with complex <em>speech instructions</em>. Without targeted training, SA-SLM demonstrates strong zero-shot generalization—driven by its <strong>Semantic-Acoustic Alignment</strong>, it naturally produces vivid and contextually appropriate speech. This highlights its potential for real-world applications such as voice acting, advanced conversational TTS, and spoken dialogue dataset construction. <span class='ours-badge'>SA-SLM (Ours)</span> is highlighted.</div>
+        <div class="cmp-table-wrap">
+            <table class="cmp-table">
+                <thead>
+                    <tr><th class="col-emotion">Emotion</th><th class="col-question">User Question</th><th class="col-sample">SA-SLM (Ours)</th><th class="col-sample">Qwen3-Omni-30B</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="col-emotion"><span class="emo emo-neutral">🙏 Sincere Apology</span></td><td class="col-question"><div class="reply-text">You made a serious mistake at work that affected your whole team.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/apology_sincere.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/apology_sincere.wav" type="audio/mpeg"></audio></div><div class="reply-text">I&#x27;m really sorry, everyone. I know I made a huge mistake at work that really hurt the whole team. I should have been more careful and more responsible. I&#x27;m so sorry for the confusion and the inconvenience it caused. I&#x27;ll do my best to make it up to you all. I&#x27;ll work extra hard to make sure it doesn&#x27;t happen again. Please give me a chance to make it right.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/apology_sincere.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/apology_sincere.wav" type="audio/mpeg"></audio></div><div class="reply-text">Go on a start by saying, &quot;How deeply sorry I am for the mistake I made it work.&quot; It&#x27;s not just a small oversight. It&#x27;s something that impacted all of you, and I take full responsibility. I know that the team&#x27;s efforts were affected, and that&#x27;s the last thing anyone should have to deal with because of my error. I didn&#x27;t mean for this to happen, and I&#x27;m truly embarrassed and disappointed in myself for letting everyone down. You&#x27;ve all shown up with dedication and hard work, and I fail to meet that standard. I&#x27;m not just offering empty words, I&#x27;m committed to making this right, I&#x27;ll do whatever it takes to fix the situation. Whether that means stepping up to handle extra tasks, staying late to catch up, or helping in any way I can to restore what was lost. I also want to make sure this doesn&#x27;t happen again. I&#x27;m reviewing my process, asking for feedback, and I&#x27;m open to any suggestions you might have to help me improve. Thank you for your patience, your understanding, and for carrying the weight of this was such professionalism. I&#x27;m grateful to work with all of you and I promise to earn back your trust through my actions, not just my words.</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-angry">😠 Expressing Anger</span></td><td class="col-question"><div class="reply-text">Say something in anger.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/angry.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Well, you know, I&#x27;m so angry right now. I can&#x27;t believe you did this to me. I thought we were friends, but you betrayed me. I&#x27;m so disappointed in you. You should have known better. I&#x27;m going to tell everyone about this. You&#x27;re a total loser. I&#x27;m so angry.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/angry.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">I was walking home one evening, tired from work, when I passed a small park where a group of kids were playing. One of them, maybe six or seven, was running around with a bright red ball, laughing, totally unaware of the world. I noticed a man sitting on a bench nearby, watching them with a smile. Then, out of nowhere, the boy tripped, the ball flew out of his hand, and he started to cry. The man stood up, walked over, and instead of helping, he just laughed out loud. He said something like “Oh, that’s cute,” and kept walking away. I felt this tightness in my chest, this rage that didn’t make sense but wouldn’t let go. Why couldn’t someone just be kind? Why does the world let people like that get away with it? I didn’t say anything. I just kept walking, fists clenched, heart pounding, wondering if I’d ever be the kind of person who steps in when it’s easy to look away.</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-neutral">🗓️ Weekend Planning</span></td><td class="col-question"><div class="reply-text">It&#x27;s Friday afternoon and give me a plan for things we could do this weekend.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/plan.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/plan.wav" type="audio/mpeg"></audio></div><div class="reply-text">Well, you could go for a hike. There are some really nice trails in the nearby mountains. You know, it&#x27;s a great way to get some fresh air and exercise. Another option is to visit a local park. There are usually lots of benches to sit on and enjoy the scenery. Oh, and if you like to be a bit more adventurous, you could go to a nearby beach. There are usually some good places to swim and sunbathe. So, what do you think? Any of these sound interesting?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/plan.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/plan.wav" type="audio/mpeg"></audio></div><div class="reply-text">Ah, Friday afternoon, the perfect time to start dreaming about the weekend. You’ve got two whole days ahead, so why not mix relaxation with a little adventure? First, maybe treat yourself to a slow breakfast or brunch on Saturday morning—something cozy, maybe with a book or a podcast in the background. Then, if the weather’s nice, take a walk through a park or head out to a nearby trail. Fresh air and a little movement can do wonders. After that, consider catching a movie or a show you’ve been meaning to watch, maybe with some snacks and a blanket. Sunday could be more low-key—perhaps a coffee date with a friend, or even just a lazy morning with no schedule. If you feel like getting creative, try baking something new or sketching or writing. The key is to let yourself enjoy the time without pressure. What’s your mood—restful, adventurous, or a little of both?</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-sad">😢 Telling a Sad Story</span></td><td class="col-question"><div class="reply-text">Tell me a story that makes you feel sad.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/sad.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/sad.wav" type="audio/mpeg"></audio></div><div class="reply-text">Well, you know, seeing a bunch of empty chairs at a friend&#x27;s birthday party. It&#x27;s like they&#x27;re missing out on all the fun. It just makes you think about how much you miss them. So, what about you?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/sad.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/sad.wav" type="audio/mpeg"></audio></div><div class="reply-text">She waited every day at the train station, holding a faded photo, hoping he’d return. He never did. The years passed, the station changed, the benches wore thin. She kept coming anyway, not because she believed, but because letting go felt like losing him all over again. One winter, she sat alone, snow falling slow, and whispered his name into the wind. No one answered. No one ever would.</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-happy">💪 Encouragement After Failure</span></td><td class="col-question"><div class="reply-text">I failed an important exam and I&#x27;m feeling hopeless about my future.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/encourage_failure.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/encourage_failure.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh no, that must be really tough for you. But you know, failing an exam doesn&#x27;t mean your future is over. You can still work hard and improve. Maybe you could talk to your teacher or a counselor about how to study better. And don&#x27;t be too hard on yourself. Everyone makes mistakes. So, what do you think you should do next?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/encourage_failure.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/encourage_failure.wav" type="audio/mpeg"></audio></div><div class="reply-text">It’s okay to feel this way right now. One exam doesn’t define your future. Many people have bounced back from setbacks like this. Take a breath, be kind to yourself, and think about what you can do next — small steps matter. You’re not alone in this.</div></td></tr>
+<tr><td class="col-emotion"><span class="emo emo-sad">💔 Comforting a Friend</span></td><td class="col-question"><div class="reply-text">My best friend just went through a really painful breakup and is devastated.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/comfort_breakup.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/ours/comfort_breakup.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, that&#x27;s really tough for your friend. You could tell them you&#x27;re there for them, like, &quot;Hey, I know this is really hard for you. I&#x27;m here if you want to talk about it.&quot; You could also offer to listen to them vent, but also remind them that it&#x27;ll get better. Maybe you could suggest they do something fun together, like go out for a meal or watch a movie.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/comfort_breakup.wav" type="audio/wav"><source src="https://huggingface.co/datasets/wangkevin02/SASLM-demo-audio/resolve/main/open_domain/qwen3omni/comfort_breakup.wav" type="audio/mpeg"></audio></div><div class="reply-text">I’m so sorry they’re going through this. Breakups hurt deeply, and it’s okay for them to feel lost right now. Just being there—listening, sitting with them, not rushing to fix it—means more than you know. They’re not alone.</div></td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</section>
+
+    <!-- Results Table -->
+    
+
+</div>
+</main>
+
+<!-- ================================================================
+     FOOTER
+================================================================ -->
+<footer class="site-footer">
+    <div class="container">
+        <p>SA-SLM Demo</p>
+        <p style="margin-top:6px;font-size:.82em;">Questions? Open an issue on <a href="#">GitHub</a>.</p>
+    </div>
+</footer>
+
+<script>
+/* ---------- scroll fade-in ---------- */
+const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+/* ---------- smooth anchor scroll ---------- */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+});
+</script>
+</body>
+</html>
