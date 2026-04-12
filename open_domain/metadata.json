@@ -1,0 +1,80 @@
+[
+  {
+    "utt_id": "od_0001",
+    "question_id": "comfort_breakup",
+    "question_text": "My best friend just went through a really painful breakup and is devastated.",
+    "ours": {
+      "reply_text": "Oh, that's really tough for your friend. You could tell them you're there for them, like, \"Hey, I know this is really hard for you. I'm here if you want to talk about it.\" You could also offer to listen to them vent, but also remind them that it'll get better. Maybe you could suggest they do something fun together, like go out for a meal or watch a movie.",
+      "reply_wav_path": "./open_domain/ours/comfort_breakup.wav"
+    },
+    "qwen3omni": {
+      "reply_text": "I’m so sorry they’re going through this. Breakups hurt deeply, and it’s okay for them to feel lost right now. Just being there—listening, sitting with them, not rushing to fix it—means more than you know. They’re not alone.",
+      "reply_wav_path": "./open_domain/qwen3omni/comfort_breakup.wav"
+    }
+  },
+  {
+    "utt_id": "od_0002",
+    "question_id": "encourage_failure",
+    "question_text": "I failed an important exam and I'm feeling hopeless about my future.",
+    "ours": {
+      "reply_text": "Oh no, that must be really tough for you. But you know, failing an exam doesn't mean your future is over. You can still work hard and improve. Maybe you could talk to your teacher or a counselor about how to study better. And don't be too hard on yourself. Everyone makes mistakes. So, what do you think you should do next?",
+      "reply_wav_path": "./open_domain/ours/encourage_failure.wav"
+    },
+    "qwen3omni": {
+      "reply_text": "It’s okay to feel this way right now. One exam doesn’t define your future. Many people have bounced back from setbacks like this. Take a breath, be kind to yourself, and think about what you can do next — small steps matter. You’re not alone in this.",
+      "reply_wav_path": "./open_domain/qwen3omni/encourage_failure.wav"
+    }
+  },
+  {
+    "utt_id": "od_0003",
+    "question_id": "sad_story",
+    "question_text": "Tell me a story that makes you feel sad.",
+    "ours": {
+      "reply_text": "Well, you know, seeing a bunch of empty chairs at a friend's birthday party. It's like they're missing out on all the fun. It just makes you think about how much you miss them. So, what about you?",
+      "reply_wav_path": "./open_domain/ours/sad.wav"
+    },
+    "qwen3omni": {
+      "reply_text": "She waited every day at the train station, holding a faded photo, hoping he’d return. He never did. The years passed, the station changed, the benches wore thin. She kept coming anyway, not because she believed, but because letting go felt like losing him all over again. One winter, she sat alone, snow falling slow, and whispered his name into the wind. No one answered. No one ever would.",
+      "reply_wav_path": "./open_domain/qwen3omni/sad.wav"
+    }
+  },
+  {
+    "utt_id": "od_0004",
+    "question_id": "weekend_plan",
+    "question_text": "It's Friday afternoon and give me a plan for things we could do this weekend.",
+    "ours": {
+      "reply_text": "Well, you could go for a hike. There are some really nice trails in the nearby mountains. You know, it's a great way to get some fresh air and exercise. Another option is to visit a local park. There are usually lots of benches to sit on and enjoy the scenery. Oh, and if you like to be a bit more adventurous, you could go to a nearby beach. There are usually some good places to swim and sunbathe. So, what do you think? Any of these sound interesting?",
+      "reply_wav_path": "./open_domain/ours/plan.wav"
+    },
+    "qwen3omni": {
+      "reply_text": "Ah, Friday afternoon, the perfect time to start dreaming about the weekend. You’ve got two whole days ahead, so why not mix relaxation with a little adventure? First, maybe treat yourself to a slow breakfast or brunch on Saturday morning—something cozy, maybe with a book or a podcast in the background. Then, if the weather’s nice, take a walk through a park or head out to a nearby trail. Fresh air and a little movement can do wonders. After that, consider catching a movie or a show you’ve been meaning to watch, maybe with some snacks and a blanket. Sunday could be more low-key—perhaps a coffee date with a friend, or even just a lazy morning with no schedule. If you feel like getting creative, try baking something new or sketching or writing. The key is to let yourself enjoy the time without pressure. What’s your mood—restful, adventurous, or a little of both?",
+      "reply_wav_path": "./open_domain/qwen3omni/plan.wav"
+    }
+  },
+  {
+    "utt_id": "od_0005",
+    "question_id": "angry_story",
+    "question_text": "Say something in anger.",
+    "ours": {
+      "reply_text": "Well, you know, I'm so angry right now. I can't believe you did this to me. I thought we were friends, but you betrayed me. I'm so disappointed in you. You should have known better. I'm going to tell everyone about this. You're a total loser. I'm so angry.",
+      "reply_wav_path": "./open_domain/ours/angry.wav"
+    },
+    "qwen3omni": {
+      "reply_text": "I was walking home one evening, tired from work, when I passed a small park where a group of kids were playing. One of them, maybe six or seven, was running around with a bright red ball, laughing, totally unaware of the world. I noticed a man sitting on a bench nearby, watching them with a smile. Then, out of nowhere, the boy tripped, the ball flew out of his hand, and he started to cry. The man stood up, walked over, and instead of helping, he just laughed out loud. He said something like “Oh, that’s cute,” and kept walking away. I felt this tightness in my chest, this rage that didn’t make sense but wouldn’t let go. Why couldn’t someone just be kind? Why does the world let people like that get away with it? I didn’t say anything. I just kept walking, fists clenched, heart pounding, wondering if I’d ever be the kind of person who steps in when it’s easy to look away.",
+      "reply_wav_path": "./open_domain/qwen3omni/angry.wav"
+    }
+  },
+  {
+    "utt_id": "od_0006",
+    "question_id": "apology_sincere",
+    "question_text": "You made a serious mistake at work that affected your whole team.",
+    "ours": {
+      "reply_text": "I'm really sorry, everyone. I know I made a huge mistake at work that really hurt the whole team. I should have been more careful and more responsible. I'm so sorry for the confusion and the inconvenience it caused. I'll do my best to make it up to you all. I'll work extra hard to make sure it doesn't happen again. Please give me a chance to make it right.",
+      "reply_wav_path": "./open_domain/ours/apology_sincere.wav"
+    },
+    "qwen3omni": {
+      "reply_text": "Go on a start by saying, \"How deeply sorry I am for the mistake I made it work.\" It's not just a small oversight. It's something that impacted all of you, and I take full responsibility. I know that the team's efforts were affected, and that's the last thing anyone should have to deal with because of my error. I didn't mean for this to happen, and I'm truly embarrassed and disappointed in myself for letting everyone down. You've all shown up with dedication and hard work, and I fail to meet that standard. I'm not just offering empty words, I'm committed to making this right, I'll do whatever it takes to fix the situation. Whether that means stepping up to handle extra tasks, staying late to catch up, or helping in any way I can to restore what was lost. I also want to make sure this doesn't happen again. I'm reviewing my process, asking for feedback, and I'm open to any suggestions you might have to help me improve. Thank you for your patience, your understanding, and for carrying the weight of this was such professionalism. I'm grateful to work with all of you and I promise to earn back your trust through my actions, not just my words.",
+      "reply_wav_path": "./open_domain/qwen3omni/apology_sincere.wav"
+    }
+  }
+]

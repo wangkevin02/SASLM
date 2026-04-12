@@ -1,0 +1,163 @@
+[
+  {
+    "utt_id": "id_1057_1",
+    "question_text": "Did you see how the referee handled that match?",
+    "question_wav_path": "./emotion/question/angry.wav",
+    "emo_label": "angry",
+    "role_agent": "fellow fan/friend",
+    "cosyvoice": {
+      "reply_text": "Oh, absolutely—I can't believe it either! Those decisions were outrageous; the referee really ruined the flow of the game! I'd be furious, too—how did you feel watching that unfold?",
+      "reply_wav_path": "./emotion/cosyvoice/angry.wav"
+    },
+    "qwen3_30b_omni": {
+      "reply_text": "Yeah, I saw it! The calls were all over the place. Felt like the ref was making it up as he went along. What a mess, right?",
+      "reply_wav_path": "./emotion/qwen3_30b_omni/angry.wav"
+    },
+    "gpt4o": {
+      "reply_text": "Oh, absolutely—I can't believe it either! Those decisions were outrageous; the referee really ruined the flow of the game! I'd be furious, too—how did you feel watching that unfold?",
+      "reply_wav_path": "./emotion/gpt4o/angry.wav"
+    },
+    "ours": {
+      "reply_text": "Well, I kind of mumbled while watching it. But you know, the way the referee was making decisions, it seemed a bit inconsistent to me. Sometimes he thought a goal was scored when it wasn't, and other times he let a foul pass. It really threw things off the balance for both teams. What do you think about how the referee's officiating affects the game?",
+      "reply_wav_path": "./emotion/ours/angry.wav"
+    }
+  },
+  {
+    "utt_id": "id_1175_1",
+    "question_text": "Do we really need everyone to participate in the scary storytelling game?",
+    "question_wav_path": "./emotion/question/fearful.wav",
+    "emo_label": "fearful",
+    "role_agent": "Teacher leading a class activity",
+    "cosyvoice": {
+      "reply_text": "Oh, I completely understand if someone feels a bit scared—I mean, those stories can get really creepy! Maybe we could offer the option to observe instead, so everyone feels safe and comfortable? Would that help ease your worry a bit?",
+      "reply_wav_path": "./emotion/cosyvoice/fearful.wav"
+    },
+    "qwen3_30b_omni": {
+      "reply_text": "Not everyone has to join in. Some people might feel uncomfortable with scary stories. You can still enjoy the game with just a few participants.",
+      "reply_wav_path": "./emotion/qwen3_30b_omni/fearful.wav"
+    },
+    "gpt4o": {
+      "reply_text": "Oh, I completely understand if someone feels a bit scared—I mean, those stories can get really creepy! Maybe we could offer the option to observe instead, so everyone feels safe and comfortable? Would that help ease your worry a bit?",
+      "reply_wav_path": "./emotion/gpt4o/fearful.wav"
+    },
+    "ours": {
+      "reply_text": "Eh, not really. I'm kinda creeped out to be honest. You know, I don't really want to get involved in that whole creepy story thing. But, if you guys need me, I'll stay on the sidelines. What do you all think about it?",
+      "reply_wav_path": "./emotion/ours/fearful.wav"
+    }
+  },
+  {
+    "utt_id": "id_1840_1",
+    "question_text": "This was my partner's favorite album, it brings back so many memories.",
+    "question_wav_path": "./emotion/question/sad.wav",
+    "emo_label": "sad",
+    "role_agent": "record store owner",
+    "cosyvoice": {
+      "reply_text": "I'm so sorry for your loss; it's understandable why this album might stir up deep memories and feelings. Music can hold powerful connections to loved ones. Would you feel comfortable sharing some of your favorite moments together? I'm here for you.",
+      "reply_wav_path": "./emotion/cosyvoice/sad.wav"
+    },
+    "qwen3_30b_omni": {
+      "reply_text": "I'm so sorry for your loss. It sounds like this album held a special place in your partner's heart. What kind of memories does it bring up for you?",
+      "reply_wav_path": "./emotion/qwen3_30b_omni/sad.wav"
+    },
+    "gpt4o": {
+      "reply_text": "I'm so sorry for your loss; it's understandable why this album might stir up deep memories and feelings. Music can hold powerful connections to loved ones. Would you feel comfortable sharing some of your favorite moments together? I'm here for you.",
+      "reply_wav_path": "./emotion/gpt4o/sad.wav"
+    },
+    "ours": {
+      "reply_text": "I'm so sorry to hear that. It sounds like this album means a lot to you and holds so many special memories of your partner. You can tell me more if you'd like. I'm here for you.",
+      "reply_wav_path": "./emotion/ours/sad.wav"
+    }
+  },
+  {
+    "utt_id": "id_2342_1",
+    "question_text": "So this is the new software update everyone has been raving about?",
+    "question_wav_path": "./emotion/question/disgusted.wav",
+    "emo_label": "disgusted",
+    "role_agent": "IT Department Technician",
+    "cosyvoice": {
+      "reply_text": "Ugh, I know, right? All that hype and this is what they deliver—I expected better. Feels like a downgrade rather than an upgrade!",
+      "reply_wav_path": "./emotion/cosyvoice/disgusted.wav"
+    },
+    "qwen3_30b_omni": {
+      "reply_text": "Yeah, I hear you — that update’s been a mess for a lot of people. What’s not working for you?",
+      "reply_wav_path": "./emotion/qwen3_30b_omni/disgusted.wav"
+    },
+    "gpt4o": {
+      "reply_text": "Ugh, I know, right? All that hype and this is what they deliver—I expected better. Feels like a downgrade rather than an upgrade!",
+      "reply_wav_path": "./emotion/gpt4o/disgusted.wav"
+    },
+    "ours": {
+      "reply_text": "Yeah, honestly, it's pretty disappointing. People talked it up so much, but it really doesn't seem that good.",
+      "reply_wav_path": "./emotion/ours/disgusted.wav"
+    }
+  },
+  {
+    "utt_id": "id_2704_1",
+    "question_text": "Can you believe they chose him for the main character?",
+    "question_wav_path": "./emotion/question/surprised.wav",
+    "emo_label": "surprised",
+    "role_agent": "sibling",
+    "cosyvoice": {
+      "reply_text": "I know—Seems like an unexpected choice, doesn't it? Curious to find out how he handles the role.",
+      "reply_wav_path": "./emotion/cosyvoice/surprised.wav"
+    },
+    "qwen3_30b_omni": {
+      "reply_text": "Yeah, it's surprising. What do you think about his performance so far?",
+      "reply_wav_path": "./emotion/qwen3_30b_omni/surprised.wav"
+    },
+    "gpt4o": {
+      "reply_text": "I know—Seems like an unexpected choice, doesn't it? Curious to find out how he handles the role.",
+      "reply_wav_path": "./emotion/gpt4o/surprised.wav"
+    },
+    "ours": {
+      "reply_text": "Yeah, it's kind of amazing. He wasn't the first person I expected for the main character.",
+      "reply_wav_path": "./emotion/ours/surprised.wav"
+    }
+  },
+  {
+    "utt_id": "id_342_1",
+    "question_text": "I'd like some information about your evening classes please.",
+    "question_wav_path": "./emotion/question/neutral.wav",
+    "emo_label": "neutral",
+    "role_agent": "school receptionist",
+    "cosyvoice": {
+      "reply_text": "Certainly! I'd be happy to help you, honored senior. We offer a variety of evening classes suitable for different interests, including art, languages, computer basics, gentle fitness, and more. Could you please tell me if there's a particular subject you're interested in or if you'd like information about schedules and enrollment options?",
+      "reply_wav_path": "./emotion/cosyvoice/neutral.wav"
+    },
+    "qwen3_30b_omni": {
+      "reply_text": "Sure! We have art, languages, computer basics, and gentle fitness classes. Do you have a specific interest? I can share schedules and enrollment details.",
+      "reply_wav_path": "./emotion/qwen3_30b_omni/neutral.wav"
+    },
+    "gpt4o": {
+      "reply_text": "Certainly! I'd be happy to help you, honored senior. We offer a variety of evening classes suitable for different interests, including art, languages, computer basics, gentle fitness, and more. Could you please tell me if there's a particular subject you're interested in or if you'd like information about schedules and enrollment options?",
+      "reply_wav_path": "./emotion/gpt4o/neutral.wav"
+    },
+    "ours": {
+      "reply_text": "Well, I'm not sure if I have any evening classes. Hmm. I'm not sure if I'm even in charge of them. But you could check the school's website, usually they have all the details there. Or you could ask the teacher in charge of the classes. Why are you interested in my evening classes?",
+      "reply_wav_path": "./emotion/ours/neutral.wav"
+    }
+  },
+  {
+    "utt_id": "id_767_1",
+    "question_text": "Guess what, the coach told me I'm starting in the soccer match this afternoon!",
+    "question_wav_path": "./emotion/question/happy.wav",
+    "emo_label": "happy",
+    "role_agent": "friend and classmate",
+    "cosyvoice": {
+      "reply_text": "That's awesome! You must've been practicing really hard—I'm sure you'll do great in the game. Good luck, and enjoy every minute out there!",
+      "reply_wav_path": "./emotion/cosyvoice/happy.wav"
+    },
+    "qwen3_30b_omni": {
+      "reply_text": "That's amazing! You must be so excited. I'm sure you'll do great out there. Enjoy every minute of it!",
+      "reply_wav_path": "./emotion/qwen3_30b_omni/happy.wav"
+    },
+    "gpt4o": {
+      "reply_text": "That's awesome! You must've been practicing really hard—I'm sure you'll do great in the game. Good luck, and enjoy every minute out there!",
+      "reply_wav_path": "./emotion/gpt4o/happy.wav"
+    },
+    "ours": {
+      "reply_text": "Oh, that's great news! You must be really excited. Are you the only one starting? Or are there others too?",
+      "reply_wav_path": "./emotion/ours/happy.wav"
+    }
+  }
+]
