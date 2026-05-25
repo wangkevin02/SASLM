@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SA-SLM: Bridging &#x27;What It Thinks&#x27; and &#x27;How It Speaks&#x27;</title>
-    <meta name="description" content="Demo page for SA-SLM: Self-Aware Speech Language Models for Expressive Speech Generation.">
+    <title>SASLM: Bridging What the Model Thinks and How It Speaks</title>
+    <meta name="description" content="Demo page for SASLM: Self-Aware Speech Language Model for Expressive Speech Generation via Self-Aware Intent-Realization Alignment.">
     <style>
         /* ============================================================
            RESET & BASE
@@ -564,15 +564,11 @@
 ================================================================ -->
 <header class="site-header">
     <div class="container">
-        <div class="header-venue">SA-SLM Demo</div>
-        <h1 class="header-paper-title"><span class='grad'>SA-SLM</span>: Bridging &quot;What It Thinks&quot; and &quot;How It Speaks&quot;<br><small style='font-size:.55em;font-weight:400;color:#a0aec0;'>Self-Aware Speech Language Models for Expressive Speech Generation</small></h1>
+        <div class="header-venue">SASLM Demo</div>
+        <h1 class="header-paper-title"><span class='grad'>SASLM</span>: Bridging What the Model Thinks and How It Speaks<br><small style='font-size:.55em;font-weight:400;color:#a0aec0;'>Expressive Speech Generation via Self-Aware Intent-Realization Alignment</small></h1>
         <p class="header-authors">Anonymous Authors</p>
         <p class="header-affiliation">Anonymous Institution</p>
-        <div class="badge-row">
-            <a href="#" class="badge badge-paper" target="_blank" rel="noopener">📄 Paper</a>
-<a href="https://github.com/wangkevin02/SASLM" class="badge badge-code" target="_blank" rel="noopener">💻 Code</a>
-<a href="https://wangkevin02.github.io//SASLM/" class="badge badge-demo" target="_blank" rel="noopener">🎙️ Demo</a>
-        </div>
+
     </div>
 </header>
 
@@ -586,28 +582,53 @@
     <section class="section fade-in" id="abstract">
         <span class="section-title">Abstract</span>
         <div class="abstract-card mt-4">
-            While current Speech Language Models (SLMs) possess strong semantic understanding, their generated speech often sounds flat and fails to convey the underlying communicative intent. We term this the <strong>semantic understanding–acoustic realization gap</strong>—a systematic failure to translate <em>what the model thinks</em> into <em>how it speaks</em>.<br><br>To bridge this gap, we introduce <strong>SA-SLM (Self-Aware Speech Language Model)</strong>. SA-SLM is built on the principle that the model is aware of <em>what it thinks</em> during generation and <em>how it speaks</em> during training, thereby continuously aligning its intent with its realization through two core innovations: <strong>(1) Intent-Aware Bridging</strong> via a Variational Information Bottleneck (VIB) to extract stable expressive intent, and <strong>(2) Realization-Aware Alignment</strong>, a closed-loop self-reward mechanism where the model acts as its own critic. Trained on just 800 hours of data, our 3B model approaches GPT-4o-Audio in expressiveness.<br><br><div style='text-align: center; margin-top: 1.5rem;'>  <img src='./framework.jpg' alt='SA-SLM Framework' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);' /></div>
+            Speech Language Models (SLMs) exhibit strong semantic understanding, yet often fail to faithfully realize expressive intent in speech, producing prosody-flattened and emotionally inconsistent responses. We identify this mismatch as the <strong>semantic understanding–acoustic realization gap</strong>.<br><br>
+            To overcome these limitations, we propose <strong>SASLM (Self-Aware Speech Language Model)</strong>, a proxy-free framework that bridges <em>what the model thinks</em> and <em>how it speaks</em> through self-aware intent and realization alignment:
+            <strong>(1) Intent-Aware Bridging</strong> self-distills expressive intent internally from the evolving semantic generation states via a Variational Information Bottleneck (VIB), guiding expressive realization without external expressive supervision; while
+            <strong>(2) Realization-Aware Alignment</strong> reflectively aligns generated acoustics with intended expression through self-reward optimization, progressively improving intent–realization consistency during speech generation.<br><br>
+            Despite using only 3B parameters and 800 hours of expressive speech data, SASLM achieves state-of-the-art performance on EchoMind among open-source systems, surpassing models over 10× larger and approaching commercial systems.<br><br>
+            <div style='text-align: center; margin-top: 1.5rem;'>
+              <img src='./framework.jpg' alt='SASLM Framework' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);' />
+            </div>
         </div>
         
     </section>
 
     
+    <!-- Key Contributions -->
     <section class="section fade-in" id="highlights">
-        <span class="section-title">Key Features</span>
+        <span class="section-title">Key Contributions</span>
         <ul class="feature-list">
-        <li class="feature-item"><span class="feature-icon">🧠</span><div class="feature-body"><strong>VIB-driven Modulation & Self-Reward Alignment</strong><span class="feature-desc">Uses a Variational Information Bottleneck (VIB) to distill stable, utterance-level expressive intent that directly steers speech generation, and employs a label-free self-reward mechanism to critique its own emotion and prosody outputs — enabling closed-loop alignment without external annotations.</span></div></li>
-        <li class="feature-item"><span class="feature-icon">⚡</span><div class="feature-body"><strong>Resource-Efficient &amp; Accessible</strong><span class="feature-desc">Achieves rich, natural expressiveness with only 3B parameters and 800 hours of expressive speech data, making it highly training-friendly and easy to reproduce.</span></div></li>
-        <li class="feature-item"><span class="feature-icon">🏆</span><div class="feature-body"><strong>Approaches GPT-4o-Audio — High Expressive Quality</strong><span class="feature-desc">
-        Expressive quality encompasses <strong>contextually appropriate</strong> 
-        <strong><em>emotion</em></strong> (accurate affect with strong intensity), 
-        <strong><em>prosody</em></strong> (humanlike pausing, stress, and rhythm), and overall
-        <strong><em>naturalness</em></strong>.
-        Our model surpasses all open-source baselines—including models 10× larger (e.g., 30B)—with 
-        +10.58pt emotion alignment and richer pitch variation 
-        (F0-Var: 63.44 vs. 49.76), while closing to within 
-        0.08pt of GPT-4o-Audio in Overall Performance (4.33 vs. 4.41).
-        </span></div></li>
-
+            <li class="feature-item">
+                <span class="feature-icon">🔍</span>
+                <div class="feature-body">
+                    <strong>Identifying the Semantic Understanding–Acoustic Realization Gap</strong>
+                    <span class="feature-desc">Semantic hidden states optimized for text prediction are not inherently aligned with expressive acoustic realization, yielding prosody-flattened responses even with strong semantic understanding. We reformulate this as a self-aware intent and realization alignment problem.</span>
+                </div>
+            </li>
+            <li class="feature-item">
+                <span class="feature-icon">🧠</span>
+                <div class="feature-body">
+                    <strong>Intent-Aware Bridging via VIB</strong>
+                    <span class="feature-desc">A VIB encoder self-distills latent expressive intent from LLM hidden states, disentangling expressive cues from lexical content and injecting them into speech conditioning via AdaLN—without any external emotion labels or style annotations.</span>
+                </div>
+            </li>
+            <li class="feature-item">
+                <span class="feature-icon">🔄</span>
+                <div class="feature-body">
+                    <strong>Realization-Aware Alignment via Closed-Loop Self-Reward</strong>
+                    <span class="feature-desc">SASLM acts as its own critic: it generates multiple rollouts, scores them on emotion, prosody, and naturalness via rubric-based rewards, and optimizes via UAPO—closing the loop between intended expression and generated acoustics without human annotations.</span>
+                </div>
+            </li>
+            <li class="feature-item">
+                <span class="feature-icon">🏆</span>
+                <div class="feature-body">
+                    <strong>State-of-the-Art among Open-Source SLMs</strong>
+                    <span class="feature-desc">Expressive quality covers <strong><em>emotion</em></strong>, <strong><em>prosody</em></strong>, and <strong><em>naturalness</em></strong>. With only 3B parameters and 800h data, SASLM surpasses Qwen3-Omni-30B (10×) in both objective metrics (F0-Var: 63.44 vs. 49.76; EmoAlign: 35.61% vs. 25.03%) and subjective scores (Emo. / Pro. / Nat. / Ovr.: 4.10 / 4.36 / 4.49 / 4.33 vs. 3.87 / 4.11 / 4.30 / 4.25), while approaching commercial systems.</span>
+                </div>
+            </li>
+        </ul>
+    </section>
 
     <!-- Table of Contents -->
     <section class="section fade-in" id="toc">
@@ -628,11 +649,11 @@
 <section class="section fade-in" id="sec-emotion">
     <span class="section-title">Emotional Generation Ability</span>
     <div class="demo-card">
-        <div class="demo-info"><strong>Evaluation on EchoMind Benchmark:</strong> This section presents the experimental results from our paper evaluated on the EchoMind benchmark. To illustrate the model's expressive performance, we sampled one representative data point for each emotion dimension as a demonstration.<br><span class='section-footnote'>Note: <strong>CosyVoice</strong> serves as a TTS baseline, which generates audio using the reference text conditioned on the golden emotion labels.</span> <span class='ours-badge'>SA-SLM (Ours)</span> is highlighted.</div>
+        <div class="demo-info"><strong>Evaluation on EchoMind Benchmark:</strong> Results from our paper on the EchoMind benchmark. One sample is randomly selected per emotion category for demonstration. <strong>CosyVoice2 (TTS w/ Oracle Prompt)</strong> synthesizes speech from the reference reply conditioned on ground-truth emotion labels, serving as an oracle intent-realization baseline. <span class='ours-badge'>SASLM (Ours)</span> is highlighted.</div>
         <div class="cmp-table-wrap">
             <table class="cmp-table">
                 <thead>
-                    <tr><th class="col-emotion">Emotion</th><th class="col-question">Question Speech / Text</th><th class="col-sample">SA-SLM (Ours)</th><th class="col-sample">GPT-4o-Audio</th><th class="col-sample">Qwen3-Omni-30B</th><th class="col-sample">CosyVoice(TTS)</th></tr>
+                    <tr><th class="col-emotion">Emotion</th><th class="col-question">Question Speech / Text</th><th class="col-sample">SASLM (Ours)</th><th class="col-sample">GPT-4o-Audio</th><th class="col-sample">Qwen3-Omni-30B</th><th class="col-sample">CosyVoice2 (TTS w/ Oracle Prompt)</th></tr>
                 </thead>
                 <tbody>
                     <tr><td class="col-emotion"><span class="emo emo-angry">Angry</span></td><td class="col-question"><div class="audio-wrap"><audio controls preload="none"><source src="./emotion/question/angry.wav" type="audio/wav"><source src="./emotion/question/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Did you see how the referee handled that match?</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="./emotion/ours/angry.wav" type="audio/wav"><source src="./emotion/ours/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Well, I kind of mumbled while watching it. But you know, the way the referee was making decisions, it seemed a bit inconsistent to me. Sometimes he thought a goal was scored when it wasn&#x27;t, and other times he let a foul pass. It really threw things off the balance for both teams. What do you think about how the referee&#x27;s officiating affects the game?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="./emotion/gpt4o/angry.wav" type="audio/wav"><source src="./emotion/gpt4o/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, absolutely—I can&#x27;t believe it either! Those decisions were outrageous; the referee really ruined the flow of the game! I&#x27;d be furious, too—how did you feel watching that unfold?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="./emotion/qwen3_30b_omni/angry.wav" type="audio/wav"><source src="./emotion/qwen3_30b_omni/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Yeah, I saw it! The calls were all over the place. Felt like the ref was making it up as he went along. What a mess, right?</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="./emotion/cosyvoice/angry.wav" type="audio/wav"><source src="./emotion/cosyvoice/angry.wav" type="audio/mpeg"></audio></div><div class="reply-text">Oh, absolutely—I can&#x27;t believe it either! Those decisions were outrageous; the referee really ruined the flow of the game! I&#x27;d be furious, too—how did you feel watching that unfold?</div></td></tr>
@@ -652,11 +673,11 @@
 <section class="section fade-in" id="sec-open-domain">
     <span class="section-title">Open-Domain Conversational Samples</span>
     <div class="demo-card">
-        <div class="demo-info"><strong>Open-Domain Generalization & Practicality:</strong> This section showcases SA-SLM's practical utility across diverse daily topics, including samples with complex <em>speech instructions</em>. Without targeted training, SA-SLM demonstrates strong zero-shot generalization—driven by its <strong>Semantic-Acoustic Alignment</strong>, it naturally produces vivid and contextually appropriate speech. This highlights its potential for real-world applications such as voice acting, advanced conversational TTS, and spoken dialogue dataset construction. <span class='ours-badge'>SA-SLM (Ours)</span> is highlighted.</div>
+        <div class="demo-info"><strong>Open-Domain Generalization &amp; Practicality:</strong> This section showcases SASLM's expressive generalization across diverse daily conversational topics, including samples with complex <em>speech instructions</em>. Without targeted training on these scenarios, SASLM demonstrates strong zero-shot generalization—driven by its <strong>self-aware intent and realization alignment</strong>, it naturally produces vivid and contextually appropriate speech. This highlights its potential for real-world applications such as voice assistants, spoken dialogue systems, and expressive speech dataset construction. <span class='ours-badge'>SASLM (Ours)</span> is highlighted.</div>
         <div class="cmp-table-wrap">
             <table class="cmp-table">
                 <thead>
-                    <tr><th class="col-emotion">Scenario</th><th class="col-question">User Question</th><th class="col-sample">SA-SLM (Ours)</th><th class="col-sample">Qwen3-Omni-30B</th></tr>
+                    <tr><th class="col-emotion">Scenario</th><th class="col-question">User Question</th><th class="col-sample">SASLM (Ours)</th><th class="col-sample">Qwen3-Omni-30B</th></tr>
                 </thead>
                 <tbody>
                     <tr><td class="col-emotion"><span class="emo emo-neutral">🙏 Sincere Apology</span></td><td class="col-question"><div class="reply-text">You made a serious mistake at work that affected your whole team.</div></td><td class="col-sample col-ours"><div class="audio-wrap"><audio controls preload="none"><source src="./open_domain/ours/apology_sincere.wav" type="audio/wav"><source src="./open_domain/ours/apology_sincere.wav" type="audio/mpeg"></audio></div><div class="reply-text">I&#x27;m really sorry, everyone. I know I made a huge mistake at work that really hurt the whole team. I should have been more careful and more responsible. I&#x27;m so sorry for the confusion and the inconvenience it caused. I&#x27;ll do my best to make it up to you all. I&#x27;ll work extra hard to make sure it doesn&#x27;t happen again. Please give me a chance to make it right.</div></td><td class="col-sample"><div class="audio-wrap"><audio controls preload="none"><source src="./open_domain/qwen3omni/apology_sincere.wav" type="audio/wav"><source src="./open_domain/qwen3omni/apology_sincere.wav" type="audio/mpeg"></audio></div><div class="reply-text">Go on a start by saying, &quot;How deeply sorry I am for the mistake I made it work.&quot; It&#x27;s not just a small oversight. It&#x27;s something that impacted all of you, and I take full responsibility. I know that the team&#x27;s efforts were affected, and that&#x27;s the last thing anyone should have to deal with because of my error. I didn&#x27;t mean for this to happen, and I&#x27;m truly embarrassed and disappointed in myself for letting everyone down. You&#x27;ve all shown up with dedication and hard work, and I fail to meet that standard. I&#x27;m not just offering empty words, I&#x27;m committed to making this right, I&#x27;ll do whatever it takes to fix the situation. Whether that means stepping up to handle extra tasks, staying late to catch up, or helping in any way I can to restore what was lost. I also want to make sure this doesn&#x27;t happen again. I&#x27;m reviewing my process, asking for feedback, and I&#x27;m open to any suggestions you might have to help me improve. Thank you for your patience, your understanding, and for carrying the weight of this was such professionalism. I&#x27;m grateful to work with all of you and I promise to earn back your trust through my actions, not just my words.</div></td></tr>
@@ -683,7 +704,7 @@
 ================================================================ -->
 <footer class="site-footer">
     <div class="container">
-        <p>SA-SLM Demo</p>
+        <p>SASLM Demo</p>
         <p style="margin-top:6px;font-size:.82em;">Questions? Open an issue on <a href="https://github.com/wangkevin02/SASLM">GitHub</a>.</p>
     </div>
 </footer>
