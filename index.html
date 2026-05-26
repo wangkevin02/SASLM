@@ -583,7 +583,7 @@
         <span class="section-title">Abstract</span>
         <div class="abstract-card mt-4">
             Speech Language Models (SLMs) exhibit strong semantic understanding, yet often fail to faithfully realize expressive intent in speech, producing prosody-flattened and emotionally inconsistent responses. We identify this mismatch as the <strong>semantic understanding–acoustic realization gap</strong>.<br><br>
-            To overcome these limitations, we propose <strong>SASLM (Self-Aware Speech Language Model)</strong>, a proxy-free framework that bridges <em>what the model thinks</em> and <em>how it speaks</em> through self-aware intent and realization alignment:
+            To better leverage semantic understanding for expressive acoustic realization, we propose <strong>SASLM (Self-Aware Speech Language Model)</strong>, a proxy-free framework that bridges <em>what the model thinks</em> and <em>how it speaks</em> through self-aware intent and realization alignment:
             <strong>(1) Intent-Aware Bridging</strong> self-distills expressive intent internally from the evolving semantic generation states via a Variational Information Bottleneck (VIB), guiding expressive realization without external expressive supervision; while
             <strong>(2) Realization-Aware Alignment</strong> reflectively aligns generated acoustics with intended expression through self-reward optimization, progressively improving intent–realization consistency during speech generation.<br><br>
             Despite using only 3B parameters and 800 hours of expressive speech data, SASLM achieves state-of-the-art performance on EchoMind among open-source systems, surpassing models over 10× larger and approaching commercial systems.<br><br>
@@ -624,7 +624,7 @@
                 <span class="feature-icon">🏆</span>
                 <div class="feature-body">
                     <strong>State-of-the-Art among Open-Source SLMs</strong>
-                    <span class="feature-desc">Expressive quality covers <strong><em>emotion</em></strong>, <strong><em>prosody</em></strong>, and <strong><em>naturalness</em></strong>. With only 3B parameters and 800h data, SASLM surpasses Qwen3-Omni-30B (10×) in both objective metrics (F0-Var: 63.44 vs. 49.76; EmoAlign: 35.61% vs. 25.03%) and subjective scores (Emo. / Pro. / Nat. / Ovr.: 4.10 / 4.36 / 4.49 / 4.33 vs. 3.87 / 4.11 / 4.30 / 4.25), while approaching commercial systems.</span>
+                    <span class="feature-desc">Expressive quality is evaluated through whether <strong><em>emotion</em></strong>, <strong><em>prosody</em></strong>, and <strong><em>naturalness</em></strong> are <strong><em></em>contextually appropriate</em></strong>.  With only 3B parameters and 800h data, SASLM-3B surpasses Qwen3-Omni-30B (10×) in both objective metrics (F0-Var: 63.44 vs. 49.76; EmoAlign: 35.61% vs. 25.03%) and subjective scores (Emo. / Pro. / Nat. / Ovr.: 4.10 / 4.36 / 4.49 / 4.33 vs. 3.87 / 4.11 / 4.30 / 4.25), while approaching commercial systems.</span>
                 </div>
             </li>
         </ul>
